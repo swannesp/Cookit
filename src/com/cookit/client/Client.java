@@ -31,6 +31,7 @@ public class Client extends UnicastRemoteObject implements ClientIF, Runnable {
 		System.out.println(message);
 	}
 
+	//temporraire, ligne de commande
 	public void analyzeMessage(String message) throws RemoteException {
 		if (message.matches("^use")) {
 			if(game.tryUse()) {
@@ -39,23 +40,25 @@ public class Client extends UnicastRemoteObject implements ClientIF, Runnable {
 			else System.out.println("occupé!");
 		}
 		else if (message.matches("^create")) {
-			game = server.createRoom(this);
+			game = server.createRoom(this, this.name);
 			System.out.println("Partie crée!");
 		}
 		else if (message.matches("^join")) {
-			game = server.queue(this);
+			game = server.queue(this, this.name);
 			
 		}
 	}
+	
+	
 	/*
 	 * Méthodes out
 	 */
 	public void createRoom() throws RemoteException {
-		server.createRoom(this);
+		server.createRoom(this, this.name);
 
 	}
 	public void join(String s) throws RemoteException {
-		server.join(this, s);
+		server.join(this, this.name, s);
 	}
 	
 	public void send(String s) throws RemoteException {

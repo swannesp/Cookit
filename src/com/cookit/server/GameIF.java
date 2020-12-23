@@ -6,6 +6,6 @@ import java.rmi.RemoteException;
 import com.cookit.client.ClientIF;
 
 public interface GameIF extends Remote {
-	public boolean tryJoin(ClientIF client) throws RemoteException;
+	public boolean tryJoin(ClientIF client, String playername) throws RemoteException;
 	public boolean tryUse() throws RemoteException; 
 }

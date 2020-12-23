@@ -68,9 +68,9 @@ public class Server extends UnicastRemoteObject implements ServerIF{
 	}
 
 	
-	public GameIF join(ClientIF client, String id) throws RemoteException {
+	public GameIF join(ClientIF client, String playername, String id) throws RemoteException {
 		if (map.containsKey(id)) {
-			if (map.get(id).tryJoin(client))
+			if (map.get(id).tryJoin(client, playername))
 				System.out.println(client.getName() + "joined room" + id);
 			else
 				System.out.println("Room is full");	
@@ -85,15 +85,15 @@ public class Server extends UnicastRemoteObject implements ServerIF{
 	 * Test if there is a room waiting for players, if not creates one,
 	 * if yes tries to join it.
 	 */
-	public GameIF queue(ClientIF client) throws RemoteException {
+	public GameIF queue(ClientIF client, String playername) throws RemoteException {
 		// TODO Auto-generated method stub
 		if (gameRooms.isEmpty()){
 			client.retrieveMessage("room created");
-			return this.createRoom(client);
+			return this.createRoom(client, client.getName());
 		}
 		else {
 			for (Game plop :gameRooms) {
-				if(plop.tryJoin(client)) {
+				if(plop.tryJoin(client, playername)) {
 					plop.getHost().retrieveMessage(client.getName() + "joined");
 					client.retrieveMessage(client.getName() + "joined");
 					return plop;
@@ -104,11 +104,11 @@ public class Server extends UnicastRemoteObject implements ServerIF{
 		}
 	}
 	
-	public Game createRoom(ClientIF client) throws RemoteException {
+	public Game createRoom(ClientIF client, String hostname) throws RemoteException {
 		System.out.println("in createroom");
 		//new Thread(new Game(client)).start();
 		String id = getGameCode();
-		Game game = new Game(client, id);
+		Game game = new Game(client, hostname, id);
 		map.put(id, game);
 		this.gameRooms.add(game);
 		System.out.println("Game " + id + " created by" + client.getName());

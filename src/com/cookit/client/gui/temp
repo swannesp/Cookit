@@ -1,0 +1,81 @@
+package com.cookit.client.gui;
+
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.io.IOException;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+public class ConnectPage extends JFrame {
+	
+	public static void main(String[] args) throws IOException {
+		String imgBackground = "C:\\Users\\swann\\M2\\Middleware\\Cookit\\src\\images\\background3.png";
+		String imgButton = "C:\\Users\\swann\\M2\\Middleware\\Cookit\\src\\images\\buttonlogin.png";
+		String imgLabel = "C:\\Users\\swann\\M2\\Middleware\\Cookit\\src\\images\\enteryournameResized.png";
+		String imgTextfield = "C:\\Users\\swann\\M2\\Middleware\\Cookit\\src\\images\\textbox1.png";
+
+		ImagePanel mainPanel = new ImagePanel(imgBackground);
+		Dimension dimension = new Dimension(1200,600);
+		//set size avant position
+		
+		JButton button = null;
+		button = new ImageButton(imgButton);
+		
+		
+		JTextField textField = new JTextField();
+		textField.setOpaque(false);
+		textField.setBorder(BorderFactory.createEmptyBorder());
+		textField.setMaximumSize(new Dimension(230,38));
+		textField.setHorizontalAlignment(JTextField.CENTER);
+		
+		ImageLabel textFieldLabel = new ImageLabel(imgTextfield);
+		textFieldLabel.setLayout(new BorderLayout());
+		textFieldLabel.add(textField);
+		textField.setAlignmentX(Component.CENTER_ALIGNMENT);
+		//ImageTextField textBox = new ImageTextField(imgTextfield);
+		
+		
+	    //textBox.setPreferredSize(buttonDimension);
+		JPanel panel = new JPanel();
+	    panel.setLayout(new BorderLayout());
+	    
+	    
+        panel.setBounds(100, 250, 250, 300);
+        panel.setOpaque(false);
+
+	    panel.setLayout(new BoxLayout(panel,BoxLayout.Y_AXIS));
+	    
+	    panel.add(new ImageLabel(imgLabel));
+	    
+	    panel.add(textFieldLabel,BorderLayout.NORTH );
+	    panel.add(Box.createRigidArea(new Dimension(0,60)));
+	    panel.add(button);
+	    panel.setAlignmentX(Component.CENTER_ALIGNMENT);
+	    
+        mainPanel.add(panel, new Integer(0), 0);
+        
+        JFrame frame = new JFrame();
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setSize(dimension);
+        frame.setLocationRelativeTo(null);
+	    frame.getContentPane().add(mainPanel,BorderLayout.CENTER);
+	    //frame.add(panel);
+	    frame.pack();
+	    frame.setVisible(true);
+	    
+	    
+	    
+	    
+	  
+	}
+
+}

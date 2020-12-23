@@ -2,9 +2,11 @@ package com.cookit.server;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-import com.cookit.client.Client;
 import com.cookit.client.ClientIF;
 
 public class Server extends UnicastRemoteObject implements ServerIF{
@@ -13,12 +15,27 @@ public class Server extends UnicastRemoteObject implements ServerIF{
 	private ArrayList<ClientIF>	queuingClients;
 	private ArrayList<Game> gameRooms;
 	private Authenticator  aut;
+	private Map<String, Game> map;
+	static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+	static SecureRandom rnd = new SecureRandom();
 
+	public String getGameCode(){
+	   StringBuilder sb = new StringBuilder(8);
+	   for(int i = 0; i < 8; i++)
+	      sb.append(AB.charAt(rnd.nextInt(AB.length())));
+	   if (map.containsKey(sb.toString()))
+	   		return getGameCode();
+	   else
+	   		return sb.toString();
+	}
+	
+	
 	protected Server() throws RemoteException {
 		clients = new ArrayList<ClientIF>();
 		queuingClients = new ArrayList<ClientIF>();
 		gameRooms = new ArrayList<Game>();
-		this.aut = new Authenticator();
+		aut = new Authenticator();
+		map = new HashMap<String, Game>();
 	}
 
 	/** test */
@@ -51,8 +68,17 @@ public class Server extends UnicastRemoteObject implements ServerIF{
 	}
 
 	
-	public GameIF join(ClientIF client) throws RemoteException {
-		return null;
+	public GameIF join(ClientIF client, String id) throws RemoteException {
+		if (map.containsKey(id)) {
+			if (map.get(id).tryJoin(client))
+				System.out.println(client.getName() + "joined room" + id);
+			else
+				System.out.println("Room is full");	
+		}
+		else {
+			System.out.println("Room not found");
+		}
+		return null;	
 	}
 
 	/**
@@ -78,12 +104,16 @@ public class Server extends UnicastRemoteObject implements ServerIF{
 		}
 	}
 	
-	public GameIF createRoom(ClientIF client) throws RemoteException {
+	public Game createRoom(ClientIF client) throws RemoteException {
 		System.out.println("in createroom");
 		//new Thread(new Game(client)).start();
-		Game game = new Game(client);
+		String id = getGameCode();
+		Game game = new Game(client, id);
+		map.put(id, game);
 		this.gameRooms.add(game);
+		System.out.println("Game " + id + " created by" + client.getName());
 		return game;
 	}
+
 
 }

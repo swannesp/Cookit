@@ -6,6 +6,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.Scanner;
 
 import com.cookit.client.gui.ConnectPage;
+import com.cookit.client.gui.ConnectPage.RoomPanel;
 import com.cookit.server.Game;
 import com.cookit.server.GameIF;
 import com.cookit.server.ServerIF;
@@ -15,6 +16,7 @@ public class Client extends UnicastRemoteObject implements ClientIF, Runnable {
 	private ServerIF server;
 	private GameIF game;
 	private String name = null;
+	private ConnectPage UI;
 
 	protected Client( ServerIF server) throws RemoteException {
 		//this.name = name;
@@ -45,22 +47,45 @@ public class Client extends UnicastRemoteObject implements ClientIF, Runnable {
 			
 		}
 	}
+	/*
+	 * Méthodes out
+	 */
+	public void createRoom() throws RemoteException {
+		server.createRoom(this);
+
+	}
+	public void join(String s) throws RemoteException {
+		server.join(this, s);
+	}
 	
 	public void send(String s) throws RemoteException {
 		server.display(s);
 	}
 	
 	public boolean authenticate(String s) throws RemoteException {
-		return server.authenticate(s);
+		if (server.authenticate(s)) {
+			this.name = s;
+			return true;
+		}
+		else return false;		
 	}
 	
 	public void queue() throws RemoteException {
 		
 	}
 	
+	/*
+	 * Méthodes in
+	 */
+	//notifie joueur quand qqun rejoint la room, met a jour
+	public void getRoomJoined(String hostname, String playername) throws RemoteException{
+		if (UI.sidePanel instanceof  RoomPanel) {
+			((RoomPanel) UI.sidePanel).refreshDisplay(hostname,playername);
+		}
+	}
 	public void run() {
 		try {
-			new ConnectPage(this);
+			UI = new ConnectPage(this);
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

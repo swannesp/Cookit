@@ -19,9 +19,11 @@ public class Game extends UnicastRemoteObject implements GameIF, Runnable {
 	private ArrayList<Usable> usables;
 	private ArrayList<ClientIF> clients;
 	private boolean used;
+	private String id;
 	
 	
-	protected Game(ClientIF host) throws RemoteException {
+	protected Game(ClientIF host, String id) throws RemoteException {
+		this.id = id;
 		this.host = host;
 		this.usables = new ArrayList<Usable>();
 		this.clients = new ArrayList<ClientIF>();
@@ -29,7 +31,7 @@ public class Game extends UnicastRemoteObject implements GameIF, Runnable {
 		this.playersIn = 1;
 		this.used=false;
 	}
-	
+
 	public ArrayList<Usable> getUsables(){
 		return this.usables;
 	}
@@ -38,6 +40,9 @@ public class Game extends UnicastRemoteObject implements GameIF, Runnable {
 		return this.host;
 	}
 	
+	public void refreshRoom(ClientIF client, String host, String player) throws RemoteException {
+		client.getRoomJoined(host,player);
+	}
 	
 	public synchronized boolean tryJoin(ClientIF client) throws RemoteException {
 		if(playersIn < 2) {

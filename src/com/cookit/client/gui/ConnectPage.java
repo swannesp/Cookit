@@ -1,6 +1,7 @@
 package com.cookit.client.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -18,6 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import com.cookit.client.Client;
+import com.cookit.server.Game;
 
 public class ConnectPage extends JFrame{
 	String imgBackground;
@@ -28,9 +30,11 @@ public class ConnectPage extends JFrame{
 	Dimension dimension;
 	
 	ImagePanel mainPanel;
-	JPanel sidePanel;
+	 public JPanel sidePanel;
 	
 	Client gameClient;
+	Game game;
+
 	
     
 	public ConnectPage(Client client) throws IOException{
@@ -86,7 +90,9 @@ public class ConnectPage extends JFrame{
 		   parent.repaint();
 		}
 
-
+	/*
+	 * Panel de connexion
+	 */
 	public class ConnectPanel extends JPanel{
 		private ImageButton loginButton;
 		private JTextField textField;
@@ -123,7 +129,12 @@ public class ConnectPage extends JFrame{
             	if(gameClient.authenticate(textField.getText())) {}
             		//card.show(cards, "One");
             		System.out.println(textField.getText());
-            		replacePanel(new MenuPanel());
+            		try {
+						replacePanel(new MenuPanel());
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
             } catch (RemoteException e1){} 
 		}
 		
@@ -141,18 +152,22 @@ public class ConnectPage extends JFrame{
 			this.textField.setAlignmentX(Component.CENTER_ALIGNMENT);
 		}
 	}
-
 	
+	/*
+	 * Panel du menu
+	 */
 	public class MenuPanel extends JPanel{
 		//private ImageButton createButton;
 		//private ImageButton joinButton;
 		//private ImageButton queueButton;
+		private JTextField textField;
 		private JButton createButton;
 		private JButton joinButton;
 		private JButton queueButton;
 		
-		protected MenuPanel() {
+		protected MenuPanel() throws IOException {
 			setButtons();
+			setTextField();
 			this.setLayout(new BorderLayout());
 			this.setBounds(100, 250, 250, 300);
 			this.setOpaque(false);
@@ -160,7 +175,16 @@ public class ConnectPage extends JFrame{
 			this.add(this.createButton);
 			this.add(this.joinButton);
 			this.add(this.queueButton);
+			this.add(this.textField);
 			this.setAlignmentX(Component.CENTER_ALIGNMENT);
+		}
+		
+		private void setTextField() throws IOException {
+			this.textField = new JTextField();
+			this.textField.setOpaque(false);
+			this.textField.setBorder(BorderFactory.createEmptyBorder());
+			this.textField.setMaximumSize(new Dimension(230,38));
+			this.textField.setHorizontalAlignment(JTextField.CENTER);
 		}
 		
 		private void setButtons() {
@@ -168,14 +192,14 @@ public class ConnectPage extends JFrame{
 			this.createButton.addActionListener(new ActionListener() {
 	            @Override
 	            public void actionPerformed(ActionEvent e) {
-	               
+	               create();
 	            }
 	        });
 			this.joinButton = new JButton("join game (NI)");
 			this.joinButton.addActionListener(new ActionListener() {
 	            @Override
 	            public void actionPerformed(ActionEvent e) {
-	               
+	            	join(textField.getText());
 	            }
 	        });
 			this.queueButton = new JButton("queue");
@@ -187,11 +211,63 @@ public class ConnectPage extends JFrame{
 	            }
 	        });
 		}
+		public void join(String s) {
+			try {
+				gameClient.join(s);
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		public void create() {
+			try {
+				gameClient.createRoom();
+				replacePanel(new RoomPanel());
+			} 	catch (RemoteException e) {}
+				catch(IOException e) {}
+		}
 		
 		public void queue() {
 			
 		}
 		
 	}
+
+	/*
+	 * Panel de l'écran de room
+	 */
+	public class RoomPanel extends JPanel{
+		PlayerPanel panel_p1 = new PlayerPanel(Color.black, gameClient);
+		PlayerPanel panel_p2 = new PlayerPanel(Color.red, null);
+		Dimension size = new Dimension(250,100);
 		
+
+		protected RoomPanel(){
+			//setButtons();
+			//setTextField();
+			//p1p.setBackground(Color.black);
+
+			this.setLayout(new BorderLayout());
+			this.setBounds(100, 250, 350, 300);
+			this.setOpaque(true);
+			
+			this.setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
+			this.setBackground(Color.blue);
+			this.add(panel_p1);
+			this.add(panel_p2);
+			//this.add(this.createButton);
+			//this.add(this.joinButton);
+			//this.add(this.queueButton);
+			//this.add(this.textField);
+			//this.setAlignmentX(Component.CENTER_ALIGNMENT);
+		}
+		
+		public void refreshDisplay(String hostname, String playername) {
+			panel_p1.setPlayer(hostname);
+			panel_p2.setPlayer(playername);
+		}
+	}
+	
+	
 }

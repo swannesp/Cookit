@@ -239,23 +239,30 @@ public class ConnectPage extends JFrame{
 	 */
 	public class RoomPanel extends JPanel{
 		ArrayList<ClientIF> clients;
-		PlayerPanel panel_p1 = new PlayerPanel(Color.black, null);
-		PlayerPanel panel_p2 = new PlayerPanel(Color.red, null);
+		PlayerPanel panel_p1 = new PlayerPanel(Color.blue, null, 0, 0);
+		PlayerPanel panel_p2 = new PlayerPanel(Color.red, null, 0, 100);
+		JPanel panel_game = new JPanel();
 		Dimension size = new Dimension(250,100);
 		
 
 		protected RoomPanel() throws RemoteException{
-			this.setLayout(new BorderLayout());
-			this.setBounds(100, 250, 350, 300);
+			this.setLayout(null);
+			this.setBounds(50, 50, 1100, 500);
 			this.setOpaque(true);
+			panel_game.setLayout( null);
+			panel_game.setBounds(300, 0, 500, 500);
+			panel_game.setOpaque(true);
+			panel_game.setBackground(Color.black);
+
 			retrieveInfos(gameClient.getGame());
-			this.setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
-			this.setBackground(Color.blue);
+			this.setLayout(null);
+			this.setBackground(Color.green);
 			this.add(panel_p1);
 			this.add(panel_p2);
+			this.add(panel_game);
 		}
 		public void retrieveInfos(GameIF game) throws RemoteException {
-			clients = game.retrieveClients();
+			this.clients = game.retrieveClients();
 			update();
 		}
 		

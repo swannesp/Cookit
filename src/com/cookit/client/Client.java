@@ -3,6 +3,7 @@ package com.cookit.client;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import com.cookit.client.gui.ConnectPage;
@@ -14,7 +15,7 @@ import com.cookit.server.ServerIF;
 public class Client extends UnicastRemoteObject implements ClientIF, Runnable {
 	private static final long serialVersionUID = 1L;
 	private ServerIF server;
-	private GameIF game;
+	public GameIF game;
 	private String name = null;
 	private ConnectPage UI;
 
@@ -24,8 +25,12 @@ public class Client extends UnicastRemoteObject implements ClientIF, Runnable {
 		server.registerClient(this);
 	}
 
-	public String getName() {
+	public String getName() throws RemoteException {
 		return this.name;
+	}
+	
+	public GameIF getGame() {
+		return this.game;
 	}
 	public void retrieveMessage(String message) throws RemoteException {
 		System.out.println(message);
@@ -40,11 +45,11 @@ public class Client extends UnicastRemoteObject implements ClientIF, Runnable {
 			else System.out.println("occupé!");
 		}
 		else if (message.matches("^create")) {
-			game = server.createRoom(this, this.name);
+			game = server.createRoom(this);
 			System.out.println("Partie crée!");
 		}
 		else if (message.matches("^join")) {
-			game = server.queue(this, this.name);
+			game = server.queue(this);
 			
 		}
 	}
@@ -54,11 +59,11 @@ public class Client extends UnicastRemoteObject implements ClientIF, Runnable {
 	 * Méthodes out
 	 */
 	public void createRoom() throws RemoteException {
-		server.createRoom(this, this.name);
+		this.game = server.createRoom(this);
 
 	}
 	public void join(String s) throws RemoteException {
-		server.join(this, this.name, s);
+		this.game = server.join(this, s);
 	}
 	
 	public void send(String s) throws RemoteException {
@@ -81,9 +86,9 @@ public class Client extends UnicastRemoteObject implements ClientIF, Runnable {
 	 * Méthodes in
 	 */
 	//notifie joueur quand qqun rejoint la room, met a jour
-	public void getRoomJoined(String hostname, String playername) throws RemoteException{
+	public void getClients(ArrayList<ClientIF> clients) throws RemoteException{
 		if (UI.sidePanel instanceof  RoomPanel) {
-			((RoomPanel) UI.sidePanel).refreshDisplay(hostname,playername);
+			((RoomPanel) UI.sidePanel).refreshInfos(clients);
 		}
 	}
 	public void run() {

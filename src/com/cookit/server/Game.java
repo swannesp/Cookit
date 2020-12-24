@@ -24,7 +24,7 @@ public class Game extends UnicastRemoteObject implements GameIF, Runnable {
 	private String id;
 	
 	
-	protected Game(ClientIF host, String hostname, String id) throws RemoteException {
+	protected Game(ClientIF host, String id) throws RemoteException {
 		this.id = id;
 		this.host = host;
 		this.hostname = hostname;
@@ -45,18 +45,20 @@ public class Game extends UnicastRemoteObject implements GameIF, Runnable {
 	
 	public void refreshRoom() throws RemoteException {
 		for (ClientIF client : this.clients)
-			client.getRoomJoined(hostname,playername);
+			client.getClients(clients);
 	}
 	
-	public synchronized boolean tryJoin(ClientIF client, String playername) throws RemoteException {
+	public synchronized boolean tryJoin(ClientIF client) throws RemoteException {
 		if(playersIn < 2) {
 			playersIn += 1;
 			this.clients.add(client);
-			this.playername = playername;
 			refreshRoom();
 			return true;
 		}
 		else return false;
+	}
+	public ArrayList<ClientIF> retrieveClients() throws RemoteException{
+		return clients;
 	}
 	
 	/** */

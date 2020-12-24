@@ -11,9 +11,9 @@ public interface ServerIF extends Remote{
 
 	void registerClient(ClientIF client) throws RemoteException;
 	void broadcastMessage(String message) throws RemoteException;
-	GameIF queue(ClientIF client, String playername) throws RemoteException;
-	GameIF createRoom(ClientIF client, String hostname) throws RemoteException; 
-	GameIF join(ClientIF client, String playername, String id) throws RemoteException;
+	GameIF queue(ClientIF client) throws RemoteException;
+	GameIF createRoom(ClientIF client) throws RemoteException; 
+	GameIF join(ClientIF client, String id) throws RemoteException;
 	void display(String s) throws RemoteException;
 	public boolean authenticate(String clientName) throws RemoteException;
 }

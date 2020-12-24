@@ -3,15 +3,17 @@ package com.cookit.client.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.rmi.RemoteException;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import com.cookit.client.Client;
+import com.cookit.client.ClientIF;
 
 public class PlayerPanel extends JPanel {
 	private JLabel name_label;
-	public PlayerPanel(Color color, Client client) {
+	public PlayerPanel(Color color, ClientIF client) throws RemoteException {
 		name_label = new JLabel();
 		
 		if (client == null)

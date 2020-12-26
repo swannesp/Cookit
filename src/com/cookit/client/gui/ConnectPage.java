@@ -65,10 +65,10 @@ public class ConnectPage extends JFrame{
 	}
 	
 	private void getImages() {
-		this.imgBackground = "C:\\Users\\swann\\M2\\Middleware\\Cookit\\src\\images\\background3.png";
-		this.imgButton = "C:\\Users\\swann\\M2\\Middleware\\Cookit\\src\\images\\buttonlogin.png";
-		this.imgLabel = "C:\\Users\\swann\\M2\\Middleware\\Cookit\\src\\images\\enteryournameResized.png";
-		this.imgTextField = "C:\\Users\\swann\\M2\\Middleware\\Cookit\\src\\images\\textbox1.png";
+		this.imgBackground = "src\\images\\background3.png";
+		this.imgButton = "src\\images\\buttonlogin.png";
+		this.imgLabel = "src\\images\\enteryournameResized.png";
+		this.imgTextField = "src\\images\\textbox1.png";
 	}
 	
 	private void setBackground() throws IOException {
@@ -231,7 +231,6 @@ public class ConnectPage extends JFrame{
 		public void queue() {
 			
 		}
-		
 	}
 
 	/*
@@ -241,6 +240,7 @@ public class ConnectPage extends JFrame{
 		PlayerPanel panel_p1 = new PlayerPanel(Color.black, gameClient);
 		PlayerPanel panel_p2 = new PlayerPanel(Color.red, null);
 		Dimension size = new Dimension(250,100);
+		private JButton testButton;
 		
 
 		protected RoomPanel(){
@@ -256,11 +256,33 @@ public class ConnectPage extends JFrame{
 			this.setBackground(Color.blue);
 			this.add(panel_p1);
 			this.add(panel_p2);
+			
+			this.testButton = new JButton("test");
+			this.add(this.testButton);
+			
+			this.testButton.addActionListener(new ActionListener() {
+	            @Override
+	            public void actionPerformed(ActionEvent e) {
+	            	test();
+	            }
+	        });
+			
+			
+			
 			//this.add(this.createButton);
 			//this.add(this.joinButton);
 			//this.add(this.queueButton);
 			//this.add(this.textField);
 			//this.setAlignmentX(Component.CENTER_ALIGNMENT);
+		}
+		
+		public void test() {
+			try {
+				gameClient.test("ok");
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		public void refreshDisplay(String hostname, String playername) {

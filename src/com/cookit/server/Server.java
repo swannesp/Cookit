@@ -6,6 +6,7 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 import com.cookit.client.ClientIF;
 
@@ -70,8 +71,12 @@ public class Server extends UnicastRemoteObject implements ServerIF{
 	
 	public GameIF join(ClientIF client, String id) throws RemoteException {
 		if (map.containsKey(id)) {
-			if (map.get(id).tryJoin(client))
-				System.out.println(client.getName() + "joined room" + id);
+			if (map.get(id).tryJoin(client)) {
+				System.out.println(client.getName() + "joined room " + id);
+				System.out.println(map.get(id).getHost().getName());
+				System.out.println(client.getName());
+				client.getRoomJoined(map.get(id).getHost().getName(), client.getName());
+			}
 			else
 				System.out.println("Room is full");	
 		}
@@ -115,5 +120,15 @@ public class Server extends UnicastRemoteObject implements ServerIF{
 		return game;
 	}
 
-
+	@Override
+	public GameIF test(ClientIF client, String id) throws RemoteException {
+		System.out.println("test");
+		for(Game gameRoom : gameRooms) {
+			if(gameRoom.getClients().contains(client)) {
+				gameRoom.initSteps();
+				gameRoom.initUsables();
+			}
+		}
+		return null;
+	}
 }

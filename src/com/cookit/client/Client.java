@@ -3,13 +3,17 @@ package com.cookit.client;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import com.cookit.client.gui.ConnectPage;
+import com.cookit.client.gui.ConnectPage.MenuPanel;
 import com.cookit.client.gui.ConnectPage.RoomPanel;
 import com.cookit.server.Game;
 import com.cookit.server.GameIF;
 import com.cookit.server.ServerIF;
+import com.cookit.server.Usable;
 
 public class Client extends UnicastRemoteObject implements ClientIF, Runnable {
 	private static final long serialVersionUID = 1L;
@@ -17,6 +21,7 @@ public class Client extends UnicastRemoteObject implements ClientIF, Runnable {
 	private GameIF game;
 	private String name = null;
 	private ConnectPage UI;
+	private List<Usable> usables = new ArrayList<>();
 
 	protected Client( ServerIF server) throws RemoteException {
 		//this.name = name;
@@ -27,6 +32,11 @@ public class Client extends UnicastRemoteObject implements ClientIF, Runnable {
 	public String getName() {
 		return this.name;
 	}
+	
+	public List<Usable> getUsables(){
+		return this.usables;
+	}
+	
 	public void retrieveMessage(String message) throws RemoteException {
 		System.out.println(message);
 	}
@@ -62,6 +72,10 @@ public class Client extends UnicastRemoteObject implements ClientIF, Runnable {
 		server.display(s);
 	}
 	
+	public void test(String s) throws RemoteException {
+		server.test(this, s);
+	}
+	
 	public boolean authenticate(String s) throws RemoteException {
 		if (server.authenticate(s)) {
 			this.name = s;
@@ -79,7 +93,7 @@ public class Client extends UnicastRemoteObject implements ClientIF, Runnable {
 	 */
 	//notifie joueur quand qqun rejoint la room, met a jour
 	public void getRoomJoined(String hostname, String playername) throws RemoteException{
-		if (UI.sidePanel instanceof  RoomPanel) {
+		if (this.getName() == hostname && UI.sidePanel instanceof RoomPanel) {
 			((RoomPanel) UI.sidePanel).refreshDisplay(hostname,playername);
 		}
 	}

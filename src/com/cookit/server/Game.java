@@ -18,6 +18,7 @@ public class Game extends UnicastRemoteObject implements GameIF, Runnable {
 	private ClientIF host;
 	private ArrayList<Usable> usables;
 	private ArrayList<ClientIF> clients;
+	private ArrayList<String> steps;
 	private boolean used;
 	private String id;
 	
@@ -27,6 +28,7 @@ public class Game extends UnicastRemoteObject implements GameIF, Runnable {
 		this.host = host;
 		this.usables = new ArrayList<Usable>();
 		this.clients = new ArrayList<ClientIF>();
+		this.steps = new ArrayList<String>();
 		this.clients.add(host);
 		this.playersIn = 1;
 		this.used=false;
@@ -36,8 +38,16 @@ public class Game extends UnicastRemoteObject implements GameIF, Runnable {
 		return this.usables;
 	}
 	
+	public ArrayList<String> getSteps(){
+		return this.steps;
+	}
+	
 	public ClientIF getHost(){
 		return this.host;
+	}
+	
+	public ArrayList<ClientIF> getClients(){
+		return this.clients;
 	}
 	
 	public void refreshRoom(ClientIF client, String host, String player) throws RemoteException {
@@ -60,6 +70,27 @@ public class Game extends UnicastRemoteObject implements GameIF, Runnable {
 			return true;
 		}
 		else return false;
+	}
+	
+	public synchronized ArrayList<String> initSteps() {
+		System.out.println("Recette de la tarte au tomates du soleil");
+		this.steps.add("Découper la pâte feuilletée en rectangle à l'aide du couteau");
+		this.steps.add("Piquer la pâte avec une fourchette");
+		this.steps.add("Couper la ciboulette avec le couteau");
+		this.steps.add("Mélanger la crème, le parmesan et la ciboulette dans un saladier, à l'aide d'une cuillère");
+		this.steps.add("Etaler à la cuillère la crème obtenue sur la pâte");
+		this.steps.add("Couper les tomates avec le couteau");
+		this.steps.add("Enfourner le tout");
+		return this.steps;
+	}
+	
+	public synchronized ArrayList<Usable> initUsables(){
+		this.usables.add(new Oven());
+		this.usables.add(new Knife());
+		this.usables.add(new Fork());
+		this.usables.add(new Spoon());
+		this.usables.add(new Bowl());
+		return this.usables;
 	}
 	
 	public void run() {

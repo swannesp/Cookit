@@ -19,7 +19,7 @@ import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 public class MyWindow extends JFrame{
 
 	private static final long serialVersionUID = -4939544011287453046L;
-	String image = "C:\\Users\\swann\\M2\\Middleware\\Cookit\\src\\images\\background.png";
+	String image = "src\\images\\background.png";
 	JButton b1;
 	JLabel l1;
 	Dimension dimension;

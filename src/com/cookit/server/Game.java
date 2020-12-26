@@ -91,6 +91,7 @@ public class Game extends UnicastRemoteObject implements GameIF, Runnable {
 		this.steps.add("Etaler à la cuillère la crème obtenue sur la pâte");
 		this.steps.add("Couper les tomates avec le couteau");
 		this.steps.add("Enfourner le tout");
+		System.out.println(this.steps);
 		return this.steps;
 	}
 	
@@ -100,6 +101,9 @@ public class Game extends UnicastRemoteObject implements GameIF, Runnable {
 		this.usables.add(new Fork());
 		this.usables.add(new Spoon());
 		this.usables.add(new Bowl());
+		for(Usable usable : this.usables) {
+			System.out.println(usable.getClass());
+		}
 		return this.usables;
 	}
 	

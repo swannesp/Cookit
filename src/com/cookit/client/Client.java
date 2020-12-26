@@ -79,8 +79,8 @@ public class Client extends UnicastRemoteObject implements ClientIF, Runnable {
 		server.display(s);
 	}
 	
-	public void test(String s) throws RemoteException {
-		server.test(this, s);
+	public void initGame() throws RemoteException {
+		server.initGame(this);
 	}
 	
 	public boolean authenticate(String s) throws RemoteException {

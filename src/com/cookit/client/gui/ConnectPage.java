@@ -240,9 +240,10 @@ public class ConnectPage extends JFrame{
 		ArrayList<ClientIF> clients;
 		PlayerPanel panel_p1 = new PlayerPanel(Color.blue, null, 0, 0);
 		PlayerPanel panel_p2 = new PlayerPanel(Color.red, null, 0, 100);
+		PlayerPanel panel_p3 = new PlayerPanel(Color.white, null, 0, 200);
 		JPanel panel_game = new JPanel();
 		Dimension size = new Dimension(250,100);
-		private JButton testButton;
+		JButton startButton = new JButton("Start");
 		
 
 		protected RoomPanel() throws RemoteException{
@@ -257,21 +258,17 @@ public class ConnectPage extends JFrame{
 			retrieveInfos(gameClient.getGame());
 			this.setLayout(null);
 			this.setBackground(Color.green);
-			this.add(panel_p1);
-			this.add(panel_p2);
 			
-			this.testButton = new JButton("test");
-			this.add(this.testButton);
-			
-			this.testButton.addActionListener(new ActionListener() {
+			this.startButton.addActionListener(new ActionListener() {
 	            @Override
 	            public void actionPerformed(ActionEvent e) {
-	            	test();
+	            	start();
 	            }
 	        });
 			
-			
-			
+			this.add(panel_p1);
+			this.add(panel_p2);
+
 			//this.add(this.createButton);
 			//this.add(this.joinButton);
 			//this.add(this.queueButton);
@@ -279,9 +276,9 @@ public class ConnectPage extends JFrame{
 			//this.setAlignmentX(Component.CENTER_ALIGNMENT);
 		}
 		
-		public void test() {
+		public void start() {
 			try {
-				gameClient.test("ok");
+				gameClient.initGame();
 			} catch (RemoteException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -305,8 +302,11 @@ public class ConnectPage extends JFrame{
 		public void update() throws RemoteException {
 			if (clients.size() > 0)
 				panel_p1.setPlayer(clients.get(0).getName());
-			if (clients.size() > 1)
+			if (clients.size() > 1) {
 				panel_p2.setPlayer(clients.get(1).getName());
+				panel_p3.add(this.startButton);
+				this.add(panel_p3);
+			}
 		}
 	}
 	

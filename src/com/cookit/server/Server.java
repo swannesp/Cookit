@@ -121,10 +121,9 @@ public class Server extends UnicastRemoteObject implements ServerIF{
 	}
 
 	@Override
-	public GameIF test(ClientIF client, String id) throws RemoteException {
-		System.out.println("test");
+	public GameIF initGame(ClientIF client) throws RemoteException {
 		for(Game gameRoom : gameRooms) {
-			if(gameRoom.getClients().contains(client)) {
+			if(gameRoom.getClients().size() == 2) {
 				gameRoom.initSteps();
 				gameRoom.initUsables();
 			}

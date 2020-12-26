@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -19,7 +20,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import com.cookit.client.Client;
+import com.cookit.client.ClientIF;
 import com.cookit.server.Game;
+import com.cookit.server.GameIF;
 
 public class ConnectPage extends JFrame{
 	String imgBackground;
@@ -214,10 +217,8 @@ public class ConnectPage extends JFrame{
 		public void join(String s) {
 			try {
 				gameClient.join(s);
-			} catch (RemoteException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+				replacePanel(new RoomPanel());
+			} catch (RemoteException e) {}
 		}
 		
 		public void create() {
@@ -225,7 +226,6 @@ public class ConnectPage extends JFrame{
 				gameClient.createRoom();
 				replacePanel(new RoomPanel());
 			} 	catch (RemoteException e) {}
-				catch(IOException e) {}
 		}
 		
 		public void queue() {
@@ -237,23 +237,26 @@ public class ConnectPage extends JFrame{
 	 * Panel de l'écran de room
 	 */
 	public class RoomPanel extends JPanel{
-		PlayerPanel panel_p1 = new PlayerPanel(Color.black, gameClient);
-		PlayerPanel panel_p2 = new PlayerPanel(Color.red, null);
+		ArrayList<ClientIF> clients;
+		PlayerPanel panel_p1 = new PlayerPanel(Color.blue, null, 0, 0);
+		PlayerPanel panel_p2 = new PlayerPanel(Color.red, null, 0, 100);
+		JPanel panel_game = new JPanel();
 		Dimension size = new Dimension(250,100);
 		private JButton testButton;
 		
 
-		protected RoomPanel(){
-			//setButtons();
-			//setTextField();
-			//p1p.setBackground(Color.black);
-
-			this.setLayout(new BorderLayout());
-			this.setBounds(100, 250, 350, 300);
+		protected RoomPanel() throws RemoteException{
+			this.setLayout(null);
+			this.setBounds(50, 50, 1100, 500);
 			this.setOpaque(true);
-			
-			this.setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
-			this.setBackground(Color.blue);
+			panel_game.setLayout( null);
+			panel_game.setBounds(300, 0, 500, 500);
+			panel_game.setOpaque(true);
+			panel_game.setBackground(Color.black);
+
+			retrieveInfos(gameClient.getGame());
+			this.setLayout(null);
+			this.setBackground(Color.green);
 			this.add(panel_p1);
 			this.add(panel_p2);
 			
@@ -288,6 +291,22 @@ public class ConnectPage extends JFrame{
 		public void refreshDisplay(String hostname, String playername) {
 			panel_p1.setPlayer(hostname);
 			panel_p2.setPlayer(playername);
+			this.add(panel_game);
+		}
+		public void retrieveInfos(GameIF game) throws RemoteException {
+			this.clients = game.retrieveClients();
+			update();
+		}
+		
+		public void refreshInfos(ArrayList<ClientIF> clients) throws RemoteException{
+			this.clients = clients;
+			update();
+		}
+		public void update() throws RemoteException {
+			if (clients.size() > 0)
+				panel_p1.setPlayer(clients.get(0).getName());
+			if (clients.size() > 1)
+				panel_p2.setPlayer(clients.get(1).getName());
 		}
 	}
 	

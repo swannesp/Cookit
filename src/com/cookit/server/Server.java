@@ -69,21 +69,21 @@ public class Server extends UnicastRemoteObject implements ServerIF{
 	}
 
 	
-	public GameIF join(ClientIF client, String id) throws RemoteException {
+	public Game join(ClientIF client, String id) throws RemoteException {
 		if (map.containsKey(id)) {
 			if (map.get(id).tryJoin(client)) {
-				System.out.println(client.getName() + "joined room " + id);
-				System.out.println(map.get(id).getHost().getName());
-				System.out.println(client.getName());
-				client.getRoomJoined(map.get(id).getHost().getName(), client.getName());
+				System.out.println(client.getName() + "joined room" + id);
+				return map.get(id);
 			}
-			else
+			else {
 				System.out.println("Room is full");	
+				return null;	
+			}
 		}
 		else {
 			System.out.println("Room not found");
+			return null;	
 		}
-		return null;	
 	}
 
 	/**

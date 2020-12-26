@@ -18,7 +18,7 @@ import com.cookit.server.Usable;
 public class Client extends UnicastRemoteObject implements ClientIF, Runnable {
 	private static final long serialVersionUID = 1L;
 	private ServerIF server;
-	private GameIF game;
+	public GameIF game;
 	private String name = null;
 	private ConnectPage UI;
 	private List<Usable> usables = new ArrayList<>();
@@ -29,7 +29,7 @@ public class Client extends UnicastRemoteObject implements ClientIF, Runnable {
 		server.registerClient(this);
 	}
 
-	public String getName() {
+	public String getName() throws RemoteException {
 		return this.name;
 	}
 	
@@ -37,10 +37,15 @@ public class Client extends UnicastRemoteObject implements ClientIF, Runnable {
 		return this.usables;
 	}
 	
+	public GameIF getGame() {
+		return this.game;
+	}
+
 	public void retrieveMessage(String message) throws RemoteException {
 		System.out.println(message);
 	}
 
+	//temporraire, ligne de commande
 	public void analyzeMessage(String message) throws RemoteException {
 		if (message.matches("^use")) {
 			if(game.tryUse()) {
@@ -57,15 +62,17 @@ public class Client extends UnicastRemoteObject implements ClientIF, Runnable {
 			
 		}
 	}
+	
+	
 	/*
 	 * Méthodes out
 	 */
 	public void createRoom() throws RemoteException {
-		server.createRoom(this);
+		this.game = server.createRoom(this);
 
 	}
 	public void join(String s) throws RemoteException {
-		server.join(this, s);
+		this.game = server.join(this, s);
 	}
 	
 	public void send(String s) throws RemoteException {
@@ -92,11 +99,12 @@ public class Client extends UnicastRemoteObject implements ClientIF, Runnable {
 	 * Méthodes in
 	 */
 	//notifie joueur quand qqun rejoint la room, met a jour
-	public void getRoomJoined(String hostname, String playername) throws RemoteException{
-		if (this.getName() == hostname && UI.sidePanel instanceof RoomPanel) {
-			((RoomPanel) UI.sidePanel).refreshDisplay(hostname,playername);
+	public void getClients(ArrayList<ClientIF> clients) throws RemoteException{
+		if (UI.sidePanel instanceof  RoomPanel) {
+			((RoomPanel) UI.sidePanel).refreshInfos(clients);
 		}
 	}
+	
 	public void run() {
 		try {
 			UI = new ConnectPage(this);

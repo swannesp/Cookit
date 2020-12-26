@@ -2,9 +2,11 @@ package com.cookit.client;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 public interface ClientIF extends Remote {
-	public void getRoomJoined(String hostname, String playername) throws RemoteException;
+	public void getClients(ArrayList<ClientIF> clients) throws RemoteException;
 	void retrieveMessage(String message) throws RemoteException;
-	String getName() throws RemoteException;
+	public String getName() throws RemoteException;
+	
 }

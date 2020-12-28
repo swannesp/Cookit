@@ -21,7 +21,7 @@ public class Client extends UnicastRemoteObject implements ClientIF, Runnable {
 	public GameIF game;
 	private String name = null;
 	private ConnectPage UI;
-	private List<Usable> usables = new ArrayList<>();
+	private ArrayList<Usable> usables = new ArrayList<>();
 
 	protected Client( ServerIF server) throws RemoteException {
 		//this.name = name;
@@ -33,12 +33,12 @@ public class Client extends UnicastRemoteObject implements ClientIF, Runnable {
 		return this.name;
 	}
 	
-	public List<Usable> getUsables(){
-		return this.usables;
-	}
-	
 	public GameIF getGame() {
 		return this.game;
+	}
+	
+	public ArrayList<Usable> getUsables(){
+		return this.usables;
 	}
 
 	public void retrieveMessage(String message) throws RemoteException {
@@ -77,10 +77,6 @@ public class Client extends UnicastRemoteObject implements ClientIF, Runnable {
 	
 	public void send(String s) throws RemoteException {
 		server.display(s);
-	}
-	
-	public void initGame() throws RemoteException {
-		server.initGame(this);
 	}
 	
 	public boolean authenticate(String s) throws RemoteException {

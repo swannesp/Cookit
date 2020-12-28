@@ -1,18 +1,21 @@
 package com.cookit.server;
 
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+
 import com.cookit.client.Client;
 
-public class Spoon implements Usable{
+public class Spoon extends UnicastRemoteObject implements Usable{
 
 	private boolean available = true;
 	private Game game;
 
-	public Spoon() {
+	public Spoon() throws RemoteException {
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
-	public void takeSpoon(Client client) throws InterruptedException {
+	public void takeSpoon(Client client) throws InterruptedException, RemoteException {
 		if(available) {
 			game.getUsables().remove(this);
 			client.getUsables().add(new Spoon());

@@ -16,6 +16,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -240,8 +241,10 @@ public class ConnectPage extends JFrame{
 		ArrayList<ClientIF> clients;
 		PlayerPanel panel_p1 = new PlayerPanel(Color.blue, null, 0, 0);
 		PlayerPanel panel_p2 = new PlayerPanel(Color.red, null, 0, 100);
-		PlayerPanel panel_p3 = new PlayerPanel(Color.white, null, 0, 200);
+		JPanel panel_start = new JPanel();
 		JPanel panel_game = new JPanel();
+		JPanel panel_recette = new JPanel();
+		JPanel panel_steps = new JPanel();
 		Dimension size = new Dimension(250,100);
 		JButton startButton = new JButton("Start");
 		
@@ -254,7 +257,15 @@ public class ConnectPage extends JFrame{
 			panel_game.setBounds(300, 0, 500, 500);
 			panel_game.setOpaque(true);
 			panel_game.setBackground(Color.black);
-
+			panel_start.setBackground(Color.GREEN);
+			panel_start.setBounds(0, 200, 60, 40);
+			panel_recette.setBackground(Color.WHITE);
+			panel_recette.setBounds(0, 240, 500, 500);
+			panel_recette.setVisible(false);
+			panel_steps.setBackground(Color.WHITE);
+			panel_steps.setBounds(0, 290, 300, 50);
+			panel_steps.setVisible(false);
+			JLabel label_recette = new JLabel("Recette de la tarte aux tomates du soleil");
 			retrieveInfos(gameClient.getGame());
 			this.setLayout(null);
 			this.setBackground(Color.green);
@@ -268,7 +279,16 @@ public class ConnectPage extends JFrame{
 			
 			this.add(panel_p1);
 			this.add(panel_p2);
+			panel_recette.add(label_recette);
+			this.add(panel_recette);
+			this.add(panel_steps);
+			
 
+			if(clients.size() < 2) {
+				panel_start.add(this.startButton);
+				this.add(panel_start);
+			}
+			
 			//this.add(this.createButton);
 			//this.add(this.joinButton);
 			//this.add(this.queueButton);
@@ -278,7 +298,15 @@ public class ConnectPage extends JFrame{
 		
 		public void start() {
 			try {
-				gameClient.initGame();
+				if(clients.size() >= 2) {
+					gameClient.getGame().initSteps();
+					gameClient.getGame().initUsables();
+					this.startButton.setEnabled(false);
+					displayGame();
+				}
+				else {
+					System.out.println("Vous ne pouvez pas jouer seul");
+				}
 			} catch (RemoteException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -300,13 +328,19 @@ public class ConnectPage extends JFrame{
 			update();
 		}
 		public void update() throws RemoteException {
-			if (clients.size() > 0)
+			if (clients.size() > 0) 
 				panel_p1.setPlayer(clients.get(0).getName());
-			if (clients.size() > 1) {
+			if (clients.size() > 1) 
 				panel_p2.setPlayer(clients.get(1).getName());
-				panel_p3.add(this.startButton);
-				this.add(panel_p3);
+		}
+		
+		public void displayGame() throws RemoteException {
+			panel_recette.setVisible(true);
+			for(String step : gameClient.getGame().getSteps()) {
+				JButton JButton = new JButton(step);	
+				panel_recette.add(JButton);
 			}
+
 		}
 	}
 	

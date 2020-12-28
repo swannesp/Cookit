@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+import com.cookit.client.Client;
 import com.cookit.client.ClientIF;
 
 public class Server extends UnicastRemoteObject implements ServerIF{
@@ -118,16 +119,5 @@ public class Server extends UnicastRemoteObject implements ServerIF{
 		this.gameRooms.add(game);
 		System.out.println("Game " + id + " created by" + client.getName());
 		return game;
-	}
-
-	@Override
-	public GameIF initGame(ClientIF client) throws RemoteException {
-		for(Game gameRoom : gameRooms) {
-			if(gameRoom.getClients().size() == 2) {
-				gameRoom.initSteps();
-				gameRoom.initUsables();
-			}
-		}
-		return null;
 	}
 }

@@ -83,7 +83,7 @@ public class Game extends UnicastRemoteObject implements GameIF, Runnable {
 	}
 	
 	public synchronized ArrayList<String> initSteps() {
-		System.out.println("Recette de la tarte au tomates du soleil");
+		System.out.println("Recette de la tarte aux tomates du soleil");
 		this.steps.add("Découper la pâte feuilletée en rectangle à l'aide du couteau");
 		this.steps.add("Piquer la pâte avec une fourchette");
 		this.steps.add("Couper la ciboulette avec le couteau");
@@ -95,7 +95,7 @@ public class Game extends UnicastRemoteObject implements GameIF, Runnable {
 		return this.steps;
 	}
 	
-	public synchronized ArrayList<Usable> initUsables(){
+	public synchronized ArrayList<Usable> initUsables() throws RemoteException {
 		this.usables.add(new Oven());
 		this.usables.add(new Knife());
 		this.usables.add(new Fork());

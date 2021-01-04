@@ -15,6 +15,7 @@ public class Server extends UnicastRemoteObject implements ServerIF{
 	private static final long serialVersionUID = 1L;
 	private ArrayList<ClientIF>	clients;
 	private ArrayList<ClientIF>	queuingClients;
+	private ArrayList<Usable> usables;
 	private ArrayList<Game> gameRooms;
 	private Authenticator  aut;
 	private Map<String, Game> map;
@@ -34,6 +35,8 @@ public class Server extends UnicastRemoteObject implements ServerIF{
 	
 	protected Server() throws RemoteException {
 		clients = new ArrayList<ClientIF>();
+		usables = new ArrayList<Usable>();
+		initUsables();
 		queuingClients = new ArrayList<ClientIF>();
 		gameRooms = new ArrayList<Game>();
 		aut = new Authenticator();
@@ -115,9 +118,19 @@ public class Server extends UnicastRemoteObject implements ServerIF{
 		//new Thread(new Game(client)).start();
 		String id = getGameCode();
 		Game game = new Game(client, id);
+		game.initUsables();
 		map.put(id, game);
 		this.gameRooms.add(game);
 		System.out.println("Game " + id + " created by" + client.getName());
 		return game;
+	}
+	
+	public ArrayList<Usable> initUsables() throws RemoteException{
+		this.usables.add(new Oven());
+		this.usables.add(new Knife());
+		this.usables.add(new Fork());
+		this.usables.add(new Spoon());
+		this.usables.add(new Bowl());
+		return this.usables;
 	}
 }

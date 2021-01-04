@@ -11,6 +11,6 @@ public interface ClientIF extends Remote {
 	public void getClients(ArrayList<ClientIF> clients) throws RemoteException;
 	void retrieveMessage(String message) throws RemoteException;
 	public String getName() throws RemoteException;
-	public ArrayList<Usable> getUsables() throws RemoteException;
+	public ArrayList<Usable> getPlayerUsables() throws RemoteException;
 	public GameIF getGame() throws RemoteException;
 }

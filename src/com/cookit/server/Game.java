@@ -37,8 +37,8 @@ public class Game extends UnicastRemoteObject implements GameIF, Runnable {
 		this.used=false;
 	}
 
-	public ArrayList<Usable> getUsables(){
-		return this.usables;
+	public ArrayList<Usable> retrieveUsables() throws RemoteException{
+		return usables;
 	}
 	
 	public ArrayList<String> getSteps(){
@@ -91,7 +91,6 @@ public class Game extends UnicastRemoteObject implements GameIF, Runnable {
 		this.steps.add("Etaler à la cuillère la crème obtenue sur la pâte");
 		this.steps.add("Couper les tomates avec le couteau");
 		this.steps.add("Enfourner le tout");
-		System.out.println(this.steps);
 		return this.steps;
 	}
 	

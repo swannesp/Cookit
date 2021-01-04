@@ -9,16 +9,19 @@ public class Bowl extends UnicastRemoteObject implements Usable{
 
 	private boolean available = true;
 	private Game game;
-
+	
 	public Bowl() throws RemoteException {
-		// TODO Auto-generated constructor stub
 	}
 
+	public String getName() throws InterruptedException, RemoteException {
+		return "Bowl";
+	}
+	
 	@Override
 	public void takeBowl(Client client) throws InterruptedException, RemoteException {
 		if(available) {
-			game.getUsables().remove(this);
-			client.getUsables().add(new Bowl());
+			game.retrieveUsables().remove(this);
+			client.getPlayerUsables().add(new Bowl());
 			available = false;
 		}
 		else {
@@ -27,14 +30,14 @@ public class Bowl extends UnicastRemoteObject implements Usable{
 	}
 
 	@Override
-	public void releaseBowl(Client client) {
-		for(Usable usable : client.getUsables()) {
+	public void releaseBowl(Client client) throws RemoteException {
+		for(Usable usable : client.getPlayerUsables()) {
 			if(usable instanceof Bowl) {
-				client.getUsables().remove(usable);
+				client.getPlayerUsables().remove(usable);
 			}
 		}
 		available = true;
-		game.getUsables().add(this);
+		game.retrieveUsables().add(this);
 	}
 
 	@Override

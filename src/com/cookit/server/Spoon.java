@@ -11,14 +11,18 @@ public class Spoon extends UnicastRemoteObject implements Usable{
 	private Game game;
 
 	public Spoon() throws RemoteException {
-		// TODO Auto-generated constructor stub
 	}
-
+	
+	@Override
+	public String getName() throws InterruptedException, RemoteException {
+		return "Spoon";
+	}
+	
 	@Override
 	public void takeSpoon(Client client) throws InterruptedException, RemoteException {
 		if(available) {
-			game.getUsables().remove(this);
-			client.getUsables().add(new Spoon());
+			game.retrieveUsables().remove(this);
+			client.getPlayerUsables().add(new Spoon());
 			available = false;
 		}
 		else {
@@ -28,14 +32,14 @@ public class Spoon extends UnicastRemoteObject implements Usable{
 
 
 	@Override
-	public void releaseSpoon(Client client) {
-		for(Usable usable : client.getUsables()) {
+	public void releaseSpoon(Client client) throws RemoteException {
+		for(Usable usable : client.getPlayerUsables()) {
 			if(usable instanceof Spoon) {
-				client.getUsables().remove(usable);
+				client.getPlayerUsables().remove(usable);
 			}
 		}
 		available = true;
-		game.getUsables().add(this);
+		game.retrieveUsables().add(this);
 	}
 
 	@Override

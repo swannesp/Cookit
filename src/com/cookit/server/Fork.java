@@ -9,16 +9,19 @@ public class Fork extends UnicastRemoteObject implements Usable{
 
 	private boolean available = true;
 	private Game game;
-
+	
 	public Fork() throws RemoteException {
-		// TODO Auto-generated constructor stub
 	}
 
+	public String getName() throws InterruptedException, RemoteException {
+		return "Fork";
+	}
+	
 	@Override
 	public void takeFork(Client client) throws InterruptedException, RemoteException {
 		if(available) {
-			game.getUsables().remove(this);
-			client.getUsables().add(new Fork());
+			game.retrieveUsables().remove(this);
+			client.getPlayerUsables().add(new Fork());
 			available = false;
 		}
 		else {
@@ -27,14 +30,14 @@ public class Fork extends UnicastRemoteObject implements Usable{
 	}
 
 	@Override
-	public void releaseFork(Client client) {
-		for(Usable usable : client.getUsables()) {
+	public void releaseFork(Client client) throws RemoteException {
+		for(Usable usable : client.getPlayerUsables()) {
 			if(usable instanceof Fork) {
-				client.getUsables().remove(usable);
+				client.getPlayerUsables().remove(usable);
 			}
 		}
 		available = true;
-		game.getUsables().add(this);
+		game.retrieveUsables().add(this);
 	}
 
 	@Override

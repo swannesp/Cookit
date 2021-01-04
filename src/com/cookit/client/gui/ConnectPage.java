@@ -24,6 +24,7 @@ import com.cookit.client.Client;
 import com.cookit.client.ClientIF;
 import com.cookit.server.Game;
 import com.cookit.server.GameIF;
+import com.cookit.server.Usable;
 
 public class ConnectPage extends JFrame{
 	String imgBackground;
@@ -243,10 +244,12 @@ public class ConnectPage extends JFrame{
 		PlayerPanel panel_p2 = new PlayerPanel(Color.red, null, 0, 100);
 		JPanel panel_start = new JPanel();
 		JPanel panel_game = new JPanel();
-		JPanel panel_recette = new JPanel();
-		JPanel panel_steps = new JPanel();
+		JPanel panel_recette = new JPanel(); 
+		JPanel panel_usables = new JPanel();
+
 		Dimension size = new Dimension(250,100);
 		JButton startButton = new JButton("Start");
+		
 		
 
 		protected RoomPanel() throws RemoteException{
@@ -259,21 +262,28 @@ public class ConnectPage extends JFrame{
 			panel_game.setBackground(Color.black);
 			panel_start.setBackground(Color.GREEN);
 			panel_start.setBounds(0, 200, 60, 40);
+			JLabel label_recette = new JLabel("Recette de la tarte aux tomates du soleil");
 			panel_recette.setBackground(Color.WHITE);
 			panel_recette.setBounds(0, 240, 500, 500);
 			panel_recette.setVisible(false);
-			panel_steps.setBackground(Color.WHITE);
-			panel_steps.setBounds(0, 290, 300, 50);
-			panel_steps.setVisible(false);
-			JLabel label_recette = new JLabel("Recette de la tarte aux tomates du soleil");
+			panel_usables.setBackground(Color.WHITE);
+			panel_usables.setBounds(300, 0, 500, 500);
+			panel_usables.setVisible(false);
+
 			retrieveInfos(gameClient.getGame());
+			
 			this.setLayout(null);
 			this.setBackground(Color.green);
 			
 			this.startButton.addActionListener(new ActionListener() {
 	            @Override
 	            public void actionPerformed(ActionEvent e) {
-	            	start();
+	            	try {
+						start();
+					} catch (InterruptedException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 	            }
 	        });
 			
@@ -281,9 +291,8 @@ public class ConnectPage extends JFrame{
 			this.add(panel_p2);
 			panel_recette.add(label_recette);
 			this.add(panel_recette);
-			this.add(panel_steps);
+			this.add(panel_usables);
 			
-
 			if(clients.size() < 2) {
 				panel_start.add(this.startButton);
 				this.add(panel_start);
@@ -296,13 +305,14 @@ public class ConnectPage extends JFrame{
 			//this.setAlignmentX(Component.CENTER_ALIGNMENT);
 		}
 		
-		public void start() {
+		public void start() throws InterruptedException {
 			try {
 				if(clients.size() >= 2) {
 					gameClient.getGame().initSteps();
-					gameClient.getGame().initUsables();
+					//gameClient.getGame().initUsables();
 					this.startButton.setEnabled(false);
-					displayGame();
+					displaySteps();
+					displayUsables();
 				}
 				else {
 					System.out.println("Vous ne pouvez pas jouer seul");
@@ -327,6 +337,7 @@ public class ConnectPage extends JFrame{
 			this.clients = clients;
 			update();
 		}
+		
 		public void update() throws RemoteException {
 			if (clients.size() > 0) 
 				panel_p1.setPlayer(clients.get(0).getName());
@@ -334,13 +345,20 @@ public class ConnectPage extends JFrame{
 				panel_p2.setPlayer(clients.get(1).getName());
 		}
 		
-		public void displayGame() throws RemoteException {
+		public void displaySteps() throws RemoteException {
 			panel_recette.setVisible(true);
 			for(String step : gameClient.getGame().getSteps()) {
 				JButton JButton = new JButton(step);	
 				panel_recette.add(JButton);
 			}
-
+		}
+		
+		public void displayUsables() throws RemoteException, InterruptedException {
+			panel_usables.setVisible(true);
+			for(Usable usable : gameClient.getGame().retrieveUsables()) {
+				JButton JButton = new JButton(usable.getName());
+				panel_usables.add(JButton);
+			}
 		}
 	}
 	

@@ -11,14 +11,17 @@ public class Oven extends UnicastRemoteObject implements Usable{
 	private Game game;
 
 	public Oven() throws RemoteException {
-		// TODO Auto-generated constructor stub
 	}
-
+	
+	public String getName() throws InterruptedException, RemoteException {
+		return "Oven";
+	}
+	
 	@Override
 	public void takeOven(Client client) throws InterruptedException, RemoteException {
 		if(available) {
-			game.getUsables().remove(this);
-			client.getUsables().add(new Oven());
+			game.retrieveUsables().remove(this);
+			client.getPlayerUsables().add(new Oven());
 			available = false;
 		}
 		else {
@@ -27,14 +30,14 @@ public class Oven extends UnicastRemoteObject implements Usable{
 	}
 
 	@Override
-	public void releaseOven(Client client) {
-		for(Usable usable : client.getUsables()) {
+	public void releaseOven(Client client) throws RemoteException {
+		for(Usable usable : client.getPlayerUsables()) {
 			if(usable instanceof Oven) {
-				client.getUsables().remove(usable);
+				client.getPlayerUsables().remove(usable);
 			}
 		}
 		available = true;
-		game.getUsables().add(this);
+		game.retrieveUsables().add(this);
 	}
 
 	@Override

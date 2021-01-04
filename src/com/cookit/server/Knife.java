@@ -9,16 +9,19 @@ public class Knife extends UnicastRemoteObject implements Usable{
 
 	private boolean available = true;
 	private Game game;
-
+	
 	public Knife() throws RemoteException {
-		// TODO Auto-generated constructor stub
+	}
+
+	public String getName() throws InterruptedException, RemoteException{
+		return "Knife";
 	}
 
 	@Override
 	public void takeKnife(Client client) throws InterruptedException, RemoteException {
 		if(available) {
-			game.getUsables().remove(this);
-			client.getUsables().add(new Knife());
+			game.retrieveUsables().remove(this);
+			client.getPlayerUsables().add(new Knife());
 			available = false;
 		}
 		else {
@@ -27,14 +30,14 @@ public class Knife extends UnicastRemoteObject implements Usable{
 	}
 
 	@Override
-	public void releaseKnife(Client client) {
-		for(Usable usable : client.getUsables()) {
+	public void releaseKnife(Client client) throws RemoteException {
+		for(Usable usable : client.getPlayerUsables()) {
 			if(usable instanceof Knife) {
-				client.getUsables().remove(usable);
+				client.getPlayerUsables().remove(usable);
 			}
 		}
 		available = true;
-		game.getUsables().add(this);
+		game.retrieveUsables().add(this);
 	}
 
 	@Override

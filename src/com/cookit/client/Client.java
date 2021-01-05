@@ -13,7 +13,7 @@ import com.cookit.client.gui.ConnectPage.RoomPanel;
 import com.cookit.server.Game;
 import com.cookit.server.GameIF;
 import com.cookit.server.ServerIF;
-import com.cookit.server.Usable;
+import com.cookit.server.UsableIF;
 
 public class Client extends UnicastRemoteObject implements ClientIF, Runnable {
 	private static final long serialVersionUID = 1L;
@@ -21,7 +21,7 @@ public class Client extends UnicastRemoteObject implements ClientIF, Runnable {
 	public GameIF game;
 	private String name = null;
 	private ConnectPage UI;
-	private ArrayList<Usable> playerUsables = new ArrayList<>();
+	private ArrayList<UsableIF> playerUsables = new ArrayList<>();
 
 	protected Client( ServerIF server) throws RemoteException {
 		//this.name = name;
@@ -37,7 +37,7 @@ public class Client extends UnicastRemoteObject implements ClientIF, Runnable {
 		return this.game;
 	}
 	
-	public ArrayList<Usable> getPlayerUsables(){
+	public ArrayList<UsableIF> getPlayerUsables(){
 		return this.playerUsables;
 	}
 

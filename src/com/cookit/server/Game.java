@@ -18,7 +18,7 @@ public class Game extends UnicastRemoteObject implements GameIF, Runnable {
 	private ClientIF host;
 	private String hostname;
 	private String playername;
-	private ArrayList<Usable> usables;
+	private ArrayList<UsableIF> usables;
 	private ArrayList<ClientIF> clients;
 	private ArrayList<String> steps;
 	private boolean used;
@@ -29,7 +29,7 @@ public class Game extends UnicastRemoteObject implements GameIF, Runnable {
 		this.id = id;
 		this.host = host;
 		this.hostname = hostname;
-		this.usables = new ArrayList<Usable>();
+		this.usables = new ArrayList<UsableIF>();
 		this.clients = new ArrayList<ClientIF>();
 		this.steps = new ArrayList<String>();
 		this.clients.add(host);
@@ -37,7 +37,7 @@ public class Game extends UnicastRemoteObject implements GameIF, Runnable {
 		this.used=false;
 	}
 
-	public ArrayList<Usable> retrieveUsables() throws RemoteException{
+	public ArrayList<UsableIF> retrieveUsables() throws RemoteException{
 		return usables;
 	}
 	
@@ -94,15 +94,12 @@ public class Game extends UnicastRemoteObject implements GameIF, Runnable {
 		return this.steps;
 	}
 	
-	public synchronized ArrayList<Usable> initUsables() throws RemoteException {
-		this.usables.add(new Oven());
-		this.usables.add(new Knife());
-		this.usables.add(new Fork());
-		this.usables.add(new Spoon());
-		this.usables.add(new Bowl());
-		for(Usable usable : this.usables) {
-			System.out.println(usable.getClass());
-		}
+	public synchronized ArrayList<UsableIF> initUsables() throws RemoteException {
+		this.usables.add(new Usable(1, "Oven"));
+		this.usables.add(new Usable(1, "Fork"));
+		this.usables.add(new Usable(1, "Spoon"));
+		this.usables.add(new Usable(1, "Bowl"));
+		this.usables.add(new Usable(1, "Knife"));
 		return this.usables;
 	}
 	

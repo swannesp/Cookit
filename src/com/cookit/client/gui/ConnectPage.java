@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.rmi.server.RemoteRef;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -24,7 +25,7 @@ import com.cookit.client.Client;
 import com.cookit.client.ClientIF;
 import com.cookit.server.Game;
 import com.cookit.server.GameIF;
-import com.cookit.server.Usable;
+import com.cookit.server.UsableIF;
 
 public class ConnectPage extends JFrame{
 	String imgBackground;
@@ -309,7 +310,6 @@ public class ConnectPage extends JFrame{
 			try {
 				if(clients.size() >= 2) {
 					gameClient.getGame().initSteps();
-					//gameClient.getGame().initUsables();
 					this.startButton.setEnabled(false);
 					displaySteps();
 					displayUsables();
@@ -318,7 +318,6 @@ public class ConnectPage extends JFrame{
 					System.out.println("Vous ne pouvez pas jouer seul");
 				}
 			} catch (RemoteException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -348,15 +347,44 @@ public class ConnectPage extends JFrame{
 		public void displaySteps() throws RemoteException {
 			panel_recette.setVisible(true);
 			for(String step : gameClient.getGame().getSteps()) {
-				JButton JButton = new JButton(step);	
+				JButton JButton = new JButton(step);
+				JButton.addActionListener(new ActionListener() {
+		            @Override
+		            public void actionPerformed(ActionEvent e) {
+						switch(step) {
+							case "test1" : System.out.println("take knife");  
+							break;
+							case "test2" : System.out.println("take bowl");
+							break;
+							case "test3" : System.out.println("take fork");
+							break;
+							case "test4" : System.out.println("take spoon");
+							break;
+							case "test5" : System.out.println("take oven");
+							break;
+						}	
+		            }
+		        });
 				panel_recette.add(JButton);
 			}
 		}
 		
 		public void displayUsables() throws RemoteException, InterruptedException {
 			panel_usables.setVisible(true);
-			for(Usable usable : gameClient.getGame().retrieveUsables()) {
+			for(UsableIF usable : gameClient.getGame().retrieveUsables()) {
 				JButton JButton = new JButton(usable.getName());
+				JButton.addActionListener(new ActionListener() {
+		            @Override
+		            public void actionPerformed(ActionEvent e) {
+		            	try {
+							usable.takeUsable(gameClient);
+							} catch (InterruptedException e1) {
+							e1.printStackTrace();
+						} catch (RemoteException e1) {
+							e1.printStackTrace();
+						}
+		            }
+		        });
 				panel_usables.add(JButton);
 			}
 		}

@@ -9,3 +9,5 @@ La classe ServerDriver doit etre lancée en activant préalablement le rmiregist
 
 
 Nous n'avons malheureusement pas réussi à terminer le projet dans les temps. L'interface permet de crééer et de rejoindre une partie grace à un code, néanmoins le jeu en lui même n'est pas fonctionnel. Les moniteurs Usable sont quand même implémentés même s'il ne sont pas utilisé pour l'instant.
+
+Projet RMI 2020-2021, Alissa Cosson & Swann Espagne.

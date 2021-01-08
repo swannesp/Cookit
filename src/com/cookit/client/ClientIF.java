@@ -8,9 +8,11 @@ import com.cookit.server.GameIF;
 import com.cookit.server.UsableIF;
 
 public interface ClientIF extends Remote {
-	public void getClients(ArrayList<ClientIF> clients) throws RemoteException;
+	public void refreshRoom(ArrayList<ClientIF> clients) throws RemoteException;
 	void retrieveMessage(String message) throws RemoteException;
 	public String getName() throws RemoteException;
 	public ArrayList<UsableIF> getPlayerUsables() throws RemoteException;
 	public GameIF getGame() throws RemoteException;
+	public void start() throws RemoteException, InterruptedException;
+	public void quitGame() throws RemoteException;
 }

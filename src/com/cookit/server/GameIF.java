@@ -13,6 +13,9 @@ public interface GameIF extends Remote {
 	public ArrayList<String> getSteps() throws RemoteException;
 	public ArrayList<UsableIF> retrieveUsables() throws RemoteException;
 	public ArrayList<String> initSteps() throws RemoteException;
+	public void start() throws RemoteException, InterruptedException;
+	public String getID() throws RemoteException;
+	public void quit(ClientIF client) throws RemoteException;
 	//public ArrayList<Usable> initUsables() throws RemoteException;
 	
 }

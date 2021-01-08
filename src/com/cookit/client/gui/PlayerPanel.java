@@ -40,5 +40,6 @@ public class PlayerPanel extends JPanel {
 			name_label.setText(client);
 		name_label.revalidate();
 		name_label.repaint();
+		this.repaint();
 	}
 }

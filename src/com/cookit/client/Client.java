@@ -22,6 +22,7 @@ public class Client extends UnicastRemoteObject implements ClientIF, Runnable {
 	private String name = null;
 	private ConnectPage UI;
 	private ArrayList<UsableIF> playerUsables = new ArrayList<>();
+	private String gameID;
 
 	protected Client( ServerIF server) throws RemoteException {
 		//this.name = name;
@@ -37,6 +38,9 @@ public class Client extends UnicastRemoteObject implements ClientIF, Runnable {
 		return this.game;
 	}
 	
+	public String getGameID() {
+		return gameID;
+	}
 	public ArrayList<UsableIF> getPlayerUsables(){
 		return this.playerUsables;
 	}
@@ -63,16 +67,26 @@ public class Client extends UnicastRemoteObject implements ClientIF, Runnable {
 		}
 	}
 	
+	public void start() throws RemoteException, InterruptedException {
+		if (UI.sidePanel instanceof  RoomPanel) {
+			((RoomPanel) UI.sidePanel).displaySteps();
+			((RoomPanel) UI.sidePanel).displayUsables();
+		}
+	}
 	
+	public void quitGame() throws RemoteException{
+		game.quit(this);
+	}
 	/*
 	 * Méthodes out
 	 */
 	public void createRoom() throws RemoteException {
 		this.game = server.createRoom(this);
-
+		this.gameID = game.getID();
 	}
 	public void join(String s) throws RemoteException {
 		this.game = server.join(this, s);
+		this.gameID = s;
 	}
 	
 	public void send(String s) throws RemoteException {
@@ -95,7 +109,7 @@ public class Client extends UnicastRemoteObject implements ClientIF, Runnable {
 	 * Méthodes in
 	 */
 	//notifie joueur quand qqun rejoint la room, met a jour
-	public void getClients(ArrayList<ClientIF> clients) throws RemoteException{
+	public void refreshRoom(ArrayList<ClientIF> clients) throws RemoteException{
 		if (UI.sidePanel instanceof  RoomPanel) {
 			((RoomPanel) UI.sidePanel).refreshInfos(clients);
 		}

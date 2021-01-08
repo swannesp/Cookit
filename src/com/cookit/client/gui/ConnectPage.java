@@ -180,8 +180,8 @@ public class ConnectPage extends JFrame{
 			this.setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
 			this.add(this.createButton);
 			this.add(this.joinButton);
-			this.add(this.queueButton);
 			this.add(this.textField);
+			this.add(this.queueButton);
 			this.setAlignmentX(Component.CENTER_ALIGNMENT);
 		}
 		
@@ -191,6 +191,7 @@ public class ConnectPage extends JFrame{
 			this.textField.setBorder(BorderFactory.createEmptyBorder());
 			this.textField.setMaximumSize(new Dimension(230,38));
 			this.textField.setHorizontalAlignment(JTextField.CENTER);
+			this.textField.setText("Game code");
 		}
 		
 		private void setButtons() {
@@ -241,47 +242,63 @@ public class ConnectPage extends JFrame{
 	 */
 	public class RoomPanel extends JPanel{
 		ArrayList<ClientIF> clients;
-		PlayerPanel panel_p1 = new PlayerPanel(Color.blue, null, 0, 0);
-		PlayerPanel panel_p2 = new PlayerPanel(Color.red, null, 0, 100);
+		PlayerPanel panel_p1 = new PlayerPanel(new Color(0,0,1f,0.5f), null, 0, 150);
+		PlayerPanel panel_p2 = new PlayerPanel(new Color(1f,0,0,0.5f), null, 0, 250);
+		JTextField gameCodeLabel = new JTextField();
 		JPanel panel_start = new JPanel();
-		JPanel panel_game = new JPanel();
+		JPanel panel_code = new JPanel();
 		JPanel panel_recette = new JPanel(); 
 		JPanel panel_usables = new JPanel();
+		String id = "";
 
 		Dimension size = new Dimension(250,100);
 		JButton startButton = new JButton("Start");
+		JButton quitButton = new JButton("Quit");
 		
 		
 
 		protected RoomPanel() throws RemoteException{
+			this.setOpaque(false);
 			this.setLayout(null);
 			this.setBounds(50, 50, 1100, 500);
-			this.setOpaque(true);
-			panel_game.setLayout( null);
-			panel_game.setBounds(300, 0, 500, 500);
-			panel_game.setOpaque(true);
-			panel_game.setBackground(Color.black);
-			panel_start.setBackground(Color.GREEN);
-			panel_start.setBounds(0, 200, 60, 40);
+			//panel_start.setBackground(Color.GREEN);
+			panel_start.setBounds(0, 350, 70, 70);
 			JLabel label_recette = new JLabel("Recette de la tarte aux tomates du soleil");
-			panel_recette.setBackground(Color.WHITE);
-			panel_recette.setBounds(0, 240, 500, 500);
+			panel_recette.setBounds(300, 0, 500, 500);
 			panel_recette.setVisible(false);
-			panel_usables.setBackground(Color.WHITE);
-			panel_usables.setBounds(300, 0, 500, 500);
+			panel_usables.setBounds(800, 0, 300, 500);
 			panel_usables.setVisible(false);
-
+			gameCodeLabel.setSize(200,100);
+			//panel_code.setBounds(0, 400, 300, 100);
+			panel_code.setBounds(70, 350, 230, 70);
+			panel_code.add(gameCodeLabel);
+			gameCodeLabel.setText("Game code: " + gameClient.getGameID());
+			gameCodeLabel.setEditable(false);
+			panel_start.add(this.startButton);
+			panel_start.add(this.quitButton);
+			
 			retrieveInfos(gameClient.getGame());
 			
-			this.setLayout(null);
-			this.setBackground(Color.green);
+			//this.setLayout(null);
+			//ConnectPage..setBackground(Color.green);
 			
 			this.startButton.addActionListener(new ActionListener() {
 	            @Override
 	            public void actionPerformed(ActionEvent e) {
 	            	try {
-						start();
-					} catch (InterruptedException e1) {
+						quit();
+					} catch (IOException e1) {
+					}
+	            }
+	        });
+			
+			
+			this.quitButton.addActionListener(new ActionListener() {
+	            @Override
+	            public void actionPerformed(ActionEvent e) {
+	            	try {
+						quit();
+					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
@@ -293,26 +310,23 @@ public class ConnectPage extends JFrame{
 			panel_recette.add(label_recette);
 			this.add(panel_recette);
 			this.add(panel_usables);
+			this.add(panel_code);
+			this.add(panel_start);
 			
-			if(clients.size() < 2) {
-				panel_start.add(this.startButton);
-				this.add(panel_start);
-			}
 			
-			//this.add(this.createButton);
-			//this.add(this.joinButton);
-			//this.add(this.queueButton);
-			//this.add(this.textField);
-			//this.setAlignmentX(Component.CENTER_ALIGNMENT);
+			
 		}
-		
+		public void quit() throws IOException {
+			try {
+				gameClient.quitGame();
+				replacePanel(new MenuPanel());
+			} catch (RemoteException e) {}
+		}
 		public void start() throws InterruptedException {
 			try {
 				if(clients.size() >= 2) {
-					gameClient.getGame().initSteps();
+					gameClient.getGame().start();
 					this.startButton.setEnabled(false);
-					displaySteps();
-					displayUsables();
 				}
 				else {
 					System.out.println("Vous ne pouvez pas jouer seul");
@@ -322,11 +336,7 @@ public class ConnectPage extends JFrame{
 			}
 		}
 		
-		public void refreshDisplay(String hostname, String playername) {
-			panel_p1.setPlayer(hostname);
-			panel_p2.setPlayer(playername);
-			this.add(panel_game);
-		}
+		
 		public void retrieveInfos(GameIF game) throws RemoteException {
 			this.clients = game.retrieveClients();
 			update();
@@ -342,6 +352,8 @@ public class ConnectPage extends JFrame{
 				panel_p1.setPlayer(clients.get(0).getName());
 			if (clients.size() > 1) 
 				panel_p2.setPlayer(clients.get(1).getName());
+			else
+				panel_p2.setPlayer("empty");
 		}
 		
 		public void displaySteps() throws RemoteException {

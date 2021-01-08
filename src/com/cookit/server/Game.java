@@ -57,7 +57,15 @@ public class Game extends UnicastRemoteObject implements GameIF, Runnable {
 
 	public void refreshRoom() throws RemoteException {
 		for (ClientIF client : this.clients)
-			client.getClients(clients);
+			client.refreshRoom(clients);
+	}
+	public void quit(ClientIF client) throws RemoteException {
+		clients.remove(client);
+		playersIn--;
+		refreshRoom();
+	}
+	public String getID() throws RemoteException {
+		return this.id;
 	}
 	
 	public synchronized boolean tryJoin(ClientIF client) throws RemoteException {
@@ -82,6 +90,11 @@ public class Game extends UnicastRemoteObject implements GameIF, Runnable {
 		else return false;
 	}
 	
+	public void start() throws RemoteException, InterruptedException {
+		initSteps();
+		for (ClientIF client : this.clients)
+			client.start();
+	}
 	public synchronized ArrayList<String> initSteps() {
 		System.out.println("Recette de la tarte aux tomates du soleil");
 		this.steps.add("Découper la pâte feuilletée en rectangle à l'aide du couteau");
